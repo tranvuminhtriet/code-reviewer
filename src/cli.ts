@@ -20,8 +20,12 @@ program
   .description("Review code changes")
   .option("-c, --commit <hash>", "Git commit hash to review", "HEAD")
   .option("-f, --file <path>", "Diff file path (alternative to commit)")
-  .option("--api-key <key>", "OpenAI API key (overrides env)")
-  .option("--model <name>", "Model name (default: gpt-4-turbo-preview)")
+  .option(
+    "--provider <type>",
+    "LLM provider: openai or google-genai (default: openai)",
+  )
+  .option("--api-key <key>", "API key (overrides env)")
+  .option("--model <name>", "Model name")
   .option("--output <dir>", "Output directory (default: ./reports)")
   .option("--format <formats>", "Output formats: markdown,html (default: both)")
   .option("--no-code-review", "Disable code review agent")
@@ -35,6 +39,9 @@ program
       const config = getDefaultConfig();
 
       // Apply CLI overrides
+      if (options.provider) {
+        config.llm.provider = options.provider;
+      }
       if (options.apiKey) {
         config.llm.apiKey = options.apiKey;
       }

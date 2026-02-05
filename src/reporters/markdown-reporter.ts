@@ -1,5 +1,6 @@
 import { BaseReporter } from "./base-reporter.js";
-import type { Report, AgentFinding } from "../reporters/types.js";
+import type { Report } from "./types.js";
+import type { AgentFinding } from "../agents/types.js";
 
 export class MarkdownReporter extends BaseReporter {
   getFormat(): "markdown" | "html" {

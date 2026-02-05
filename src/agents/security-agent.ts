@@ -8,32 +8,10 @@ export class SecurityAgent extends BaseAgent {
   constructor(llm: any, config: Record<string, any> = {}) {
     super(llm, config);
 
-    // Initialize ESLint with security plugin
-    this.eslint = new ESLint({
-      useEslintrc: false,
-      overrideConfig: {
-        parser: "@typescript-eslint/parser",
-        parserOptions: {
-          ecmaVersion: 2022,
-          sourceType: "module",
-        },
-        plugins: ["security"],
-        rules: {
-          "security/detect-object-injection": "warn",
-          "security/detect-non-literal-regexp": "warn",
-          "security/detect-unsafe-regex": "error",
-          "security/detect-buffer-noassert": "error",
-          "security/detect-child-process": "warn",
-          "security/detect-disable-mustache-escape": "error",
-          "security/detect-eval-with-expression": "error",
-          "security/detect-no-csrf-before-method-override": "error",
-          "security/detect-non-literal-fs-filename": "warn",
-          "security/detect-non-literal-require": "warn",
-          "security/detect-possible-timing-attacks": "warn",
-          "security/detect-pseudoRandomBytes": "error",
-        },
-      },
-    });
+    // TODO: Re-enable ESLint static analysis after fixing compatibility with ESLint 9.x
+    // The ESLint API has changed significantly in v9.x
+    // For now, relying on LLM-based security analysis only
+    this.eslint = null as any;
   }
 
   protected getAgentName(): string {
@@ -116,6 +94,11 @@ Output ONLY a valid JSON array of findings. If no additional issues are found be
   }
 
   private async runStaticAnalysis(context: AgentContext): Promise<any[]> {
+    // Skip static analysis if ESLint is not initialized
+    if (!this.eslint) {
+      return [];
+    }
+
     const findings: any[] = [];
 
     for (const file of context.diff.files) {

@@ -85,26 +85,41 @@ Output ONLY a valid JSON array of findings. If no additional issues are found, r
   private async runASTAnalysis(context: AgentContext): Promise<any[]> {
     const findings: any[] = [];
 
-    for (const file of context.diff.files) {
-      // Skip deleted files
-      if (file.status === "deleted") continue;
+    // Suppress TypeScript version warning from @typescript-eslint/typescript-estree
+    // This warning appears when using TypeScript 5.6+ with older parser versions
+    // The parser still works correctly, so we can safely suppress the warning
+    const originalEnv = process.env.TSESTREE_SINGLE_RUN;
+    process.env.TSESTREE_SINGLE_RUN = "true";
 
-      try {
-        // Reconstruct file content
-        const content = this.reconstructFileContent(file);
+    try {
+      for (const file of context.diff.files) {
+        // Skip deleted files
+        if (file.status === "deleted") continue;
 
-        // Parse to AST
-        const ast = parse(content, {
-          jsx: true,
-          loc: true,
-          range: true,
-        });
+        try {
+          // Reconstruct file content
+          const content = this.reconstructFileContent(file);
 
-        // Analyze AST for performance patterns
-        this.analyzeAST(ast, file.path, findings);
-      } catch (error) {
-        // Skip files that can't be parsed
-        console.warn(`Failed to parse ${file.path}:`, error);
+          // Parse to AST
+          const ast = parse(content, {
+            jsx: true,
+            loc: true,
+            range: true,
+          });
+
+          // Analyze AST for performance patterns
+          this.analyzeAST(ast, file.path, findings);
+        } catch (error) {
+          // Skip files that can't be parsed
+          console.warn(`Failed to parse ${file.path}:`, error);
+        }
+      }
+    } finally {
+      // Restore original environment variable
+      if (originalEnv === undefined) {
+        delete process.env.TSESTREE_SINGLE_RUN;
+      } else {
+        process.env.TSESTREE_SINGLE_RUN = originalEnv;
       }
     }
 

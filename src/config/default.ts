@@ -5,11 +5,27 @@ import type { PipelineConfig } from "../pipeline/types.js";
 loadEnv();
 
 export function getDefaultConfig(): PipelineConfig {
+  // Get provider from environment (default: openai)
+  const provider = (process.env.LLM_PROVIDER as any) || "openai";
+
+  // Get API key based on provider
+  let apiKey = "";
+  let defaultModel = "";
+
+  if (provider === "google-genai") {
+    apiKey = process.env.GEMINI_API_KEY || "";
+    defaultModel = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+  } else {
+    // Default to OpenAI
+    apiKey = process.env.OPENAI_API_KEY || "";
+    defaultModel = process.env.OPENAI_MODEL || "gpt-4-turbo-preview";
+  }
+
   return {
     llm: {
-      provider: (process.env.LLM_PROVIDER as any) || "openai",
-      apiKey: process.env.OPENAI_API_KEY || "",
-      model: process.env.OPENAI_MODEL || "gpt-4-turbo-preview",
+      provider,
+      apiKey,
+      model: defaultModel,
     },
     agents: {
       codeReview: {

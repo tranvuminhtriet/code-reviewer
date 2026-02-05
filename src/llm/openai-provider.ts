@@ -11,9 +11,17 @@ export class OpenAIProvider implements LLMProvider {
   private client: OpenAI;
   private defaultModel: string;
 
-  constructor(config: { apiKey: string; model?: string }) {
+  constructor(config: { apiKey?: string; model?: string }) {
+    const apiKey = config.apiKey || process.env.OPENAI_API_KEY || "";
+
+    if (!apiKey) {
+      throw new Error(
+        "OpenAI API key is required. Set OPENAI_API_KEY in .env or pass apiKey in config.",
+      );
+    }
+
     this.client = new OpenAI({
-      apiKey: config.apiKey,
+      apiKey,
     });
     this.defaultModel = config.model || "gpt-4-turbo-preview";
   }
