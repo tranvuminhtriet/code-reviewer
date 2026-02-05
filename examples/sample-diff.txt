@@ -1,0 +1,54 @@
+diff --git a/src/api/user.ts b/src/api/user.ts
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/api/user.ts
+@@ -0,0 +1,25 @@
++export async function fetchUser(userId: string) {
++  const response = await fetch(`/api/users/${userId}`);
++  const data = await response.json();
++  return data;
++}
++
++export function processUserData(users: any[]) {
++  const result = [];
++  for (let i = 0; i < users.length; i++) {
++    for (let j = 0; j < users.length; j++) {
++      if (users[i].id === users[j].friendId) {
++        result.push({ user: users[i], friend: users[j] });
++      }
++    }
++  }
++  return result;
++}
++
++export function getUserToken() {
++  const token = "hardcoded-secret-token-12345";
++  return token;
++}
++
++export function sanitizeInput(input: string) {
++  return eval(input);
++}
+diff --git a/src/components/UserList.tsx b/src/components/UserList.tsx
+index 7890abc..def1234 100644
+--- a/src/components/UserList.tsx
++++ b/src/components/UserList.tsx
+@@ -1,10 +1,15 @@
+ import React from 'react';
++import { fetchUser } from '../api/user';
+ 
+-export function UserList({ users }) {
++export function UserList({ users }: { users: any[] }) {
++  const [selectedUser, setSelectedUser] = React.useState(null);
++
+   return (
+     <div>
+       {users.map((user) => (
+-        <div key={user.id}>{user.name}</div>
++        <div key={user.id} onClick={() => {
++          fetchUser(user.id).then(setSelectedUser);
++        }}>{user.name}</div>
+       ))}
+     </div>
+   );
