@@ -15,14 +15,32 @@ export class GitDiffParser {
    */
   async parseDiff(commitHash: string = "HEAD"): Promise<ParsedDiff> {
     try {
-      // Get diff summary
-      const diffSummary = await this.git.diffSummary([
-        `${commitHash}^`,
-        commitHash,
-      ]);
+      // Check if this is the first commit (no parent)
+      const log = await this.git.log([commitHash]);
+      const isFirstCommit =
+        log.all.length === 1 && log.all[0].hash === log.latest?.hash;
 
-      // Get detailed diff
-      const diff = await this.git.diff([`${commitHash}^`, commitHash]);
+      let diffSummary: DiffResult;
+      let diff: string;
+
+      if (isFirstCommit) {
+        // For first commit, diff against empty tree
+        diffSummary = await this.git.diffSummary([
+          "4b825dc642cb6eb9a060e54bf8d69288fbee4904", // Git's empty tree SHA
+          commitHash,
+        ]);
+        diff = await this.git.diff([
+          "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+          commitHash,
+        ]);
+      } else {
+        // Normal case: diff against parent commit
+        diffSummary = await this.git.diffSummary([
+          `${commitHash}^`,
+          commitHash,
+        ]);
+        diff = await this.git.diff([`${commitHash}^`, commitHash]);
+      }
 
       return this.processDiff(diff, diffSummary);
     } catch (error) {
