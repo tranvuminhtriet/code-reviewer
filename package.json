@@ -1,26 +1,49 @@
 {
-  "name": "code-review-automation",
+  "name": "@tvmt/commit-reporter",
   "version": "1.0.0",
-  "description": "Automated code review with AI agents",
+  "description": "AI-powered code review automation with Google Gemini & OpenAI. Analyze commits and generate comprehensive review reports.",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
-    "code-review": "dist/cli.js"
+    "commit-reporter": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli.ts",
     "test": "vitest",
-    "review": "tsx src/cli.ts review"
+    "review": "tsx src/cli.ts review",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "code-review",
     "ai",
     "automation",
-    "static-analysis"
+    "gemini",
+    "openai",
+    "commit",
+    "git",
+    "static-analysis",
+    "security",
+    "performance"
   ],
-  "author": "",
+  "author": "Tran Vu Minh Triet",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tranvuminhtriet/code-reviewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tranvuminhtriet/code-reviewer/issues"
+  },
+  "homepage": "https://github.com/tranvuminhtriet/code-reviewer#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@typescript-eslint/parser": "^7.0.0",

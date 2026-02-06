@@ -1,34 +1,67 @@
-# Code Review Automation
+# @tvmt/commit-reporter
 
-Automated code review system using AI agents to analyze TypeScript/JavaScript code changes for quality, security, and performance issues.
+AI-powered code review automation with Google Gemini & OpenAI. Analyze commits and generate comprehensive review reports.
 
 ## Features
 
 - 🤖 **Three Specialized AI Agents**:
   - **Code Review Agent**: Analyzes code quality, best practices, and potential bugs
-  - **Security Agent**: Scans for security vulnerabilities (OWASP Top 10) with ESLint integration
+  - **Security Agent**: Scans for security vulnerabilities (OWASP Top 10)
   - **Performance Agent**: Detects performance anti-patterns with AST analysis
 
 - 📊 **Comprehensive Reports**: Generate both Markdown and HTML reports
 - 🔄 **Sequential Pipeline**: Agents run in sequence, each building on previous findings
 - 🎯 **TypeScript/JavaScript Focus**: Filters and analyzes only TS/JS files
 - ⚙️ **Flexible Configuration**: Environment variables and CLI options
-- 🚀 **Ready for CI/CD**: Designed for easy GitHub Actions integration (future)
+- 🔌 **Multiple LLM Providers**: Google Gemini & OpenAI support
 
-## Installation
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Global installation (recommended)
+npm install -g @tvmt/commit-reporter
+
+# Or use with npx (no installation needed)
+npx @tvmt/commit-reporter review
+```
+
+### Setup
+
+1. Create `.env` file in your project:
+
+```bash
+# Choose your LLM provider
+LLM_PROVIDER=google-genai
+
+# Add your API key
+GEMINI_API_KEY=your-api-key-here
+# Or for OpenAI
+# OPENAI_API_KEY=sk-...
+```
+
+2. Run review:
+
+```bash
+commit-reporter review
+```
+
+## Installation from Source
 
 ```bash
 # Clone the repository
+git clone https://github.com/tranvuminhtriet/code-reviewer.git
 cd code-reviewer
 
 # Install dependencies
 npm install
 
-# Copy environment template
-cp .env.example .env
+# Build
+npm run build
 
-# Add your OpenAI API key to .env
-# OPENAI_API_KEY=sk-...
+# Link globally
+npm link
 ```
 
 ## Quick Start

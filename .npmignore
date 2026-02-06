@@ -1,0 +1,31 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Config files
+tsconfig.json
+.env
+
+# Development
+node_modules/
+.agent/
+examples/
+reports/
+demo.sh
+
+# Git
+.git/
+.gitignore
+
+# Build artifacts
+*.log
+*.tgz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (keep README.md)
+QUICK_START.md
+docs/
