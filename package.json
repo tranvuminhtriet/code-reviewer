@@ -1,6 +1,6 @@
 {
   "name": "@tvmt/commit-reporter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "AI-powered code review automation with Google Gemini & OpenAI. Analyze commits and generate comprehensive review reports.",
   "type": "module",
   "main": "dist/cli.js",
