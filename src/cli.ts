@@ -152,4 +152,49 @@ program
     }
   });
 
+// Extract command - filter checked findings from markdown report
+program
+  .command("extract")
+  .description("Extract checked findings from markdown report")
+  .argument("<report>", "Path to markdown report file")
+  .option("-o, --output <file>", "Output file (default: stdout)")
+  .option("-f, --format <type>", "Output format: markdown|json", "markdown")
+  .action(async (reportPath, options) => {
+    try {
+      const {
+        extractCheckedFindings,
+        formatFindingsAsMarkdown,
+        formatFindingsAsJSON,
+      } = await import("./commands/extract.js");
+
+      // Extract checked findings
+      const findings = await extractCheckedFindings(reportPath);
+
+      // Format output
+      let output: string;
+      if (options.format === "json") {
+        output = formatFindingsAsJSON(findings);
+      } else {
+        output = formatFindingsAsMarkdown(findings);
+      }
+
+      // Write to file or stdout
+      if (options.output) {
+        const fs = await import("fs/promises");
+        await fs.writeFile(options.output, output, "utf-8");
+        console.log(
+          chalk.green(`✅ Extracted findings saved to: ${options.output}`),
+        );
+        console.log(chalk.gray(`   Total: ${findings.length} finding(s)`));
+      } else {
+        console.log(output);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(chalk.red(`\\nError: ${error.message}`));
+      }
+      process.exit(1);
+    }
+  });
+
 program.parse();

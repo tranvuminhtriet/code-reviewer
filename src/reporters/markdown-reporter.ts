@@ -96,21 +96,28 @@ export class MarkdownReporter extends BaseReporter {
   }
 
   private formatFinding(finding: AgentFinding): string {
-    let md = `#### ${this.getTypeBadge(finding.type)} ${finding.category}\n\n`;
-    md += `**File**: \`${finding.file}\`${finding.line ? `:${finding.line}` : ""}\n\n`;
-    md += `**Issue**: ${finding.message}\n\n`;
+    // Add checkbox for interactive selection
+    let md = `- [ ] **[${finding.severity.toUpperCase()}]** ${finding.category}\n`;
+    md += `  - **File**: \`${finding.file}\`${finding.line ? `:${finding.line}` : ""}\n`;
+    md += `  - **Issue**: ${finding.message}\n`;
 
     if (finding.suggestion) {
-      md += `**Suggestion**: ${finding.suggestion}\n\n`;
+      md += `  - **Suggestion**: ${finding.suggestion}\n`;
     }
 
     if (finding.code) {
-      md += "**Code**:\n```typescript\n";
-      md += finding.code;
-      md += "\n```\n\n";
+      md += "  - **Code**:\n";
+      md += "    ```typescript\n";
+      // Indent code block
+      const indentedCode = finding.code
+        .split("\n")
+        .map((line) => `    ${line}`)
+        .join("\n");
+      md += indentedCode;
+      md += "\n    ```\n";
     }
 
-    md += "---\n\n";
+    md += "\n";
 
     return md;
   }
